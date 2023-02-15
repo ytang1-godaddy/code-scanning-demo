@@ -12,7 +12,7 @@ interface User {
   isAdmin: boolean;
 }
 interface DownloadForm {
-  userInfo?: User;
+  userInfo?: User | undefined;
   fileName: string;
 }
 
@@ -21,7 +21,7 @@ export async function canDownload(formData: DownloadForm): Promise<boolean> {
   let email, pwd: string;
   try {
     const sqlQuery = "SELECT email, password FROM files WHERE name = ?";
-    const res = await db.connect(sqlQuery, [formData.fileName])[0];
+    const res = await db.querySanitized(sqlQuery, [formData.fileName])[0];
     email = res.email;
     pwd = decrypt(DECRYPT_KEY)(res.password);
   } catch (err) {
