@@ -1,0 +1,10 @@
+[tool.tartufo]
+repo-path = "."
+regex = true
+entropy = true
+
+exclude-path-patterns = [
+    {path-pattern = 'tartufo.toml', reason='Exclude tartufo config'},
+    {path-pattern = '.pre-commit-config.yaml', reason='Exclude pre commit config'},
+    
+]
