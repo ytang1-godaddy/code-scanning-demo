@@ -1,0 +1,37 @@
+name: Bandit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  secuirycheck:
+    name: upload Bandit scanning result
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Create results 
+        run: |
+          mkdir results
+          chmod +w results
+
+      - name: Install Bandit
+        run: |
+          pip3 install bandit
+          pip3 install bandit_sarif_formatter
+
+      - name: Run Bandit
+        run: bandit -r . --format sarif --output results/results.sarif
+        #run: bandit -r .
+        continue-on-error: true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results/results.sarif
+          category: Bandit
